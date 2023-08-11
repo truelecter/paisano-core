@@ -23,13 +23,15 @@
     multiplePaths = l.isList (l.elemAt p 0);
     hoist = path:
       l.mapAttrs (
-        _: v: let
+        a: v: let
           attr = l.getAttrFromPath path v;
         in
-          # skip overhead if filtering is not needed
-          if pred == true
-          then attr
-          else l.filterAttrs pred attr
+          builtins.trace a (
+            # skip overhead if filtering is not needed
+            if pred == true
+            then attr
+            else l.filterAttrs pred attr
+          )
       )
       (
         l.filterAttrs (
