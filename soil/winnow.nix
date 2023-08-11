@@ -23,15 +23,13 @@
     multiplePaths = l.isList (l.elemAt p 0);
     hoist = path:
       l.mapAttrs (
-        a: v: let
+        system: v: let
           attr = l.getAttrFromPath path v;
         in
-          builtins.trace a (
-            # skip overhead if filtering is not needed
-            if pred == true
-            then attr
-            else l.filterAttrs pred attr
-          )
+          # skip overhead if filtering is not needed
+          if pred == true
+          then attr
+          else l.filterAttrs (_: value: (pred {inherit system value path;})) attr
       )
       (
         l.filterAttrs (
